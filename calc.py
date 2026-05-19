@@ -183,7 +183,7 @@ with col_display:
             st.metric("Valor Declarado", f"R$ {declarado*st.session_state.valor_conversao_dolar:.2f}")
         with m_col5:
             if st.session_state.taxa_inclusa == True:
-                st.metric("Imposto a Pagar", f"R$ {(declarado*st.session_state.valor_conversao_dolar + st.session_state.frete) / 0.92:.2f}")
+                st.metric("Imposto a Pagar", f"R$ {(declarado*st.session_state.valor_conversao_dolar + st.session_state.frete) * 0.92:.2f}")
             else:
                 st.metric("Imposto a Pagar", f"R$ {declarado*st.session_state.valor_conversao_dolar *0.92:.2f}")
             
