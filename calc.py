@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+
 import requests
 
 
@@ -8,8 +9,8 @@ url = "https://economia.awesomeapi.com.br/json/last/USD-BRL,BRL-CNY"
 response = requests.get(url)
 dados = response.json()
 
-usd = float(dados["USD-BRL"]["bid"])
-cny = float(dados["BRL-CNY"]["bid"])
+usd = float(dados["USDBRL"]["bid"])
+cny = float(dados["BRLCNY"]["bid"])
 
 # Configuração da página para alta qualidade visual e responsividade
 st.set_page_config(
