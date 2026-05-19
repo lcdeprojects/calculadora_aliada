@@ -102,40 +102,6 @@ with col_input:
             st.rerun()
 
 with col_input:
-    st.subheader("➕ Adicionar Novo Item")
-    
-    # Formulário para cadastrar novos itens (limpa os inputs automaticamente após envio)
-    with st.form("cadastro_produto", clear_on_submit=True):
-        nome_produto = st.text_input("Nome do Produto", placeholder="Nome...", key="form_nome")
-        
-        col_price, col_qty, col_declarado = st.columns(3)
-        with col_price:
-            valor_produto = st.number_input("Valor Unitário (Yuan)", min_value=0, key="form_valor")
-        with col_qty:
-            qtd_produto = st.number_input("Quantidade", min_value=1, value=1, step=1, key="form_qtd")
-        with col_declarado:
-            valor_declarado = st.number_input("Valor Declarado (US$)", min_value=0, key="form_valor_declarado")
-            
-        
-        submitted = st.form_submit_button("Adicionar à Lista")
-        
-        if submitted:
-            if not nome_produto.strip() or valor_produto == 0 or valor_declarado == 0 or qtd_produto == 0:
-                st.error("Por favor, digite o nome do produto e insira valores válidos para a conversão!")
-            else:
-                # Adiciona o produto na lista armazenada no estado da sessão
-                st.session_state.lista_produtos.append({
-                    "id": len(st.session_state.lista_produtos),
-                    "nome": nome_produto.strip(),
-                    "valor": valor_produto,
-                    "quantidade": qtd_produto,
-                    "total": valor_produto * qtd_produto,
-                    "valor_declarado": valor_declarado,
-                })
-                st.success(f"'{nome_produto}' adicionado com sucesso!")
-                st.rerun()
-
-with col_input:
     if st.session_state.mostrar_frete:
         st.subheader("🛬Frete")
         with st.form("cadastro_frete", clear_on_submit=True):
@@ -157,6 +123,48 @@ with col_input:
         if st.button("Alterar Frete"):
             st.session_state.mostrar_frete = True
             st.rerun()
+
+with col_display:
+    st.subheader("➕ Adicionar Novo Item")
+    
+    # Formulário para cadastrar novos itens (limpa os inputs automaticamente após envio)
+    with st.form("cadastro_produto", clear_on_submit=True):
+        nome_produto = st.text_input("Nome do Produto", placeholder="Nome...", key="form_nome")
+        
+        col_price, col_qty, col_declarado = st.columns(3)
+        with col_price:
+            valor_produto = st.number_input("Valor Unitário (Yuan)", min_value=0, key="form_valor")
+        with col_qty:
+            qtd_produto = st.number_input("Quantidade", min_value=1, value=1, step=1, key="form_qtd")
+        with col_declarado:
+            valor_declarado = st.number_input("Valor Declarado (US$)", min_value=0, key="form_valor_declarado")
+            
+        
+        submitted = st.form_submit_button("Adicionar à Lista")
+        
+        if submitted:
+            if st.session_state.valor_conversao_yuan == 0 or st.session_state.valor_conversao_dolar == 0:
+                st.error("Por favor, insira valores válidos para a conversão!")
+            
+            elif st.session_state.frete == 0:
+                st.error("Por favor, insira um valor válido para o frete!")
+
+            elif not nome_produto.strip() or valor_produto == 0 or valor_declarado == 0 or qtd_produto == 0:
+                st.error("Por favor, digite o nome do produto e insira valores válidos para a conversão!")
+            else:
+                # Adiciona o produto na lista armazenada no estado da sessão
+                st.session_state.lista_produtos.append({
+                    "id": len(st.session_state.lista_produtos),
+                    "nome": nome_produto.strip(),
+                    "valor": valor_produto,
+                    "quantidade": qtd_produto,
+                    "total": valor_produto * qtd_produto,
+                    "valor_declarado": valor_declarado,
+                })
+                st.success(f"'{nome_produto}' adicionado com sucesso!")
+                st.rerun()
+
+
 
     
 with col_display:
