@@ -8,8 +8,8 @@ url = "https://economia.awesomeapi.com.br/json/last/USD-BRL,BRL-CNY"
 response = requests.get(url)
 dados = response.json()
 
-usd = float(dados["USDBRL"]["bid"])
-cny = float(dados["BRLCNY"]["bid"])
+usd = float(dados["USD-BRL"]["bid"])
+cny = float(dados["BRL-CNY"]["bid"])
 
 # Configuração da página para alta qualidade visual e responsividade
 st.set_page_config(
