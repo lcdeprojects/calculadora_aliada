@@ -117,14 +117,29 @@ div.stButton > button:hover {
 
 @media (max-width: 768px) {
 
+.block-container {
+    padding-top: 0.8rem !important;
+    padding-bottom: 1rem !important;
+}
+
+/* Desktop */
+@media (min-width: 769px) {
+    .block-container {
+        padding-left: 3rem !important;
+        padding-right: 3rem !important;
+        max-width: 1400px;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
     .block-container {
         padding-left: 1rem !important;
         padding-right: 1rem !important;
-        padding-top: 1rem !important;
     }
 
     .app-title {
-        font-size: 2rem;
+        font-size: 2rem !important;
     }
 
     div.stButton > button {
