@@ -94,7 +94,7 @@ with col_input:
                     st.session_state.mostrar_form = False
                     st.rerun()
     else:
-        st.subheader("💵 Conversãoooooo")            
+        st.subheader("💵 Conversão")            
         st.text(f"Conversão atual: {st.session_state.valor_conversao_yuan} Yuans")
         st.text(f"Conversão atual: {st.session_state.valor_conversao_dolar} Dólares")
         if st.button("Alterar Conversão"):
