@@ -45,6 +45,8 @@ if 'modo_layout' not in st.session_state:
 # =====================================================
 
 st.markdown("   ")
+st.markdown("   ")
+st.markdown("   ")
 st.markdown("## 🎨 Layout")
 
 modo = st.sidebar.radio(
