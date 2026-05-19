@@ -120,8 +120,8 @@ with col_input:
         submitted = st.form_submit_button("Adicionar à Lista")
         
         if submitted:
-            if not nome_produto.strip():
-                st.error("Por favor, digite o nome do produto!")
+            if not nome_produto.strip() or valor_produto == 0 or valor_declarado == 0 or qtd_produto == 0:
+                st.error("Por favor, digite o nome do produto e insira valores válidos para a conversão!")
             else:
                 # Adiciona o produto na lista armazenada no estado da sessão
                 st.session_state.lista_produtos.append({
