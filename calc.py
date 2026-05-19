@@ -205,7 +205,7 @@ with col_display:
                     st.caption(f"Qtd: {row['quantidade']}")
                 with col_price:
                     st.markdown(f"**R$ {row['total']/ st.session_state.valor_conversao:.2f}**")
-                    st.caption(f"Unidade: R$ {row['valor']/ st.session_state.valor_conversao:.2f}")
+                    st.caption(f"Unidade: Yuan {row['valor']}")
                 with col_decl:
                     st.text("Valor Declarado")
                     st.markdown(f"**US$ {row['valor_declarado']:.2f}**")
