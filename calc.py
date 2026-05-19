@@ -15,9 +15,10 @@ st.set_page_config(
 # Inicializa a lista de produtos no session_state para manter os dados ao recarregar
 if 'lista_produtos' not in st.session_state:
     st.session_state.lista_produtos = []
-if 'valor_conversao' not in st.session_state:
+if 'valor_conversao_yuan' and 'valor_conversao_dolar' not in st.session_state:
     st.session_state.mostrar_form = True
-    st.session_state.valor_conversao = 0.0
+    st.session_state.valor_conversao_yuan = 0.0
+    st.session_state.valor_conversao_dolar = 0.0
 if 'frete' not in st.session_state:
     st.session_state.frete = 0.0
     st.session_state.taxa_inclusa = False
@@ -78,18 +79,24 @@ col_input, col_display = st.columns([2, 3])
 
 with col_input:
     if st.session_state.mostrar_form:
-        st.subheader("💵 Yuan para Real")
+        st.subheader("💵 Conversão")
         with st.form("cadastro_conversao", clear_on_submit=True):
-            valor_conversao = st.number_input("Valor da Conversão (R$)", min_value=0.0, step=0.01, format="%.2f", key="form_conversao")
+            valor_conversao_yuan = st.number_input("Valor da Conversão (Yuan)", min_value=0.0, step=0.01, key="form_conversao_yuan")
+            valor_conversao_dolar = st.number_input("Valor da Conversão (Dólar)", min_value=0.0, step=0.01, key="form_conversao_dolar")
             submitted = st.form_submit_button("Adicionar Conversão")
             if submitted:
-                st.session_state.valor_conversao = valor_conversao
-                st.success(f"Conversão adicionada com sucesso!")
-                st.session_state.mostrar_form = False
-                st.rerun()
+                if valor_conversao_yuan == 0 or valor_conversao_dolar == 0:
+                    st.error("Por favor, insira valores válidos para a conversão!")
+                else:
+                    st.session_state.valor_conversao_yuan = valor_conversao_yuan
+                    st.session_state.valor_conversao_dolar = valor_conversao_dolar
+                    st.success(f"Conversão adicionada com sucesso!")
+                    st.session_state.mostrar_form = False
+                    st.rerun()
     else:
-        st.subheader("💵 Yuan para Real")            
-        st.text(f"Conversão atual: {st.session_state.valor_conversao}")
+        st.subheader("💵 Conversãoooooo")            
+        st.text(f"Conversão atual: {st.session_state.valor_conversao_yuan} Yuans")
+        st.text(f"Conversão atual: {st.session_state.valor_conversao_dolar} Dólares")
         if st.button("Alterar Conversão"):
             st.session_state.mostrar_form = True
             st.rerun()
@@ -148,6 +155,7 @@ with col_input:
             st.session_state.mostrar_frete = True
             st.rerun()
 
+    
 with col_display:
     st.subheader("📋 Lista de Itens")
     
@@ -156,7 +164,7 @@ with col_display:
     else:
         # Cálculo dos totais agregados
         total_items = sum(item["quantidade"] for item in st.session_state.lista_produtos)
-        total_value = sum(item["total"]/st.session_state.valor_conversao for item in st.session_state.lista_produtos)
+        total_value = sum(item["total"]/st.session_state.valor_conversao_yuan for item in st.session_state.lista_produtos)
         unique_items = len(st.session_state.lista_produtos)
         
         # Exibição das métricas com design elegante
@@ -172,12 +180,12 @@ with col_display:
                 st.metric("Valor Total", f"R$ {total_value :.2f}")
         with m_col4:
             declarado = sum(item["valor_declarado"] for item in st.session_state.lista_produtos)
-            st.metric("Valor Declarado", f"R$ {declarado*5:.2f}")
+            st.metric("Valor Declarado", f"R$ {declarado*st.session_state.valor_conversao_dolar:.2f}")
         with m_col5:
             if st.session_state.taxa_inclusa == True:
-                st.metric("Imposto a Pagar", f"R$ {(declarado*5 + st.session_state.frete) / 0.92:.2f}")
+                st.metric("Imposto a Pagar", f"R$ {(declarado*st.session_state.valor_conversao_dolar + st.session_state.frete) / 0.92:.2f}")
             else:
-                st.metric("Imposto a Pagar", f"R$ {declarado*5 *0.92:.2f}")
+                st.metric("Imposto a Pagar", f"R$ {declarado*st.session_state.valor_conversao_dolar *0.92:.2f}")
             
         st.markdown("---")
         
@@ -203,7 +211,7 @@ with col_display:
                     st.markdown(f"**{row['nome']}**")
                     st.caption(f"Qtd: {row['quantidade']}")
                 with col_price:
-                    st.markdown(f"**R$ {row['total']/ st.session_state.valor_conversao:.2f}**")
+                    st.markdown(f"**R$ {row['total']/ st.session_state.valor_conversao_yuan:.2f}**")
                     st.caption(f"Unidade: Yuan {row['valor']}")
                 with col_decl:
                     st.text("Valor Declarado")
