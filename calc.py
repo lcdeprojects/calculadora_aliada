@@ -43,11 +43,20 @@ if 'modo_layout' not in st.session_state:
 # =====================================================
 # SIDEBAR / RESPONSIVIDADE
 # =====================================================
+st.markdown("   ")
+st.markdown("   ")
+st.markdown("   ")
+st.markdown(
+    '<h1 class="app-title">🛍️ Calculadora Yuan</h1>',
+    unsafe_allow_html=True
+)
 
-st.markdown("   ")
-st.markdown("   ")
-st.markdown("   ")
-st.markdown("## 🎨 Layout")
+st.markdown(
+    '<p class="app-subtitle">Converta produtos importados facilmente</p>',
+    unsafe_allow_html=True
+)
+
+
 
 modo = st.sidebar.radio(
     "Escolha o modo:",
@@ -192,15 +201,6 @@ else:
 # CABEÇALHO
 # =====================================================
 
-st.markdown(
-    '<h1 class="app-title">🛍️ Calculadora Yuan</h1>',
-    unsafe_allow_html=True
-)
-
-st.markdown(
-    '<p class="app-subtitle">Converta produtos importados facilmente</p>',
-    unsafe_allow_html=True
-)
 
 # =====================================================
 # COLUNA INPUT
