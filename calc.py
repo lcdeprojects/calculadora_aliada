@@ -1,18 +1,8 @@
 import streamlit as st
 import pandas as pd
-
 import requests
 
-
-url = "https://economia.awesomeapi.com.br/json/last/USD-BRL,BRL-CNY"
-
-response = requests.get(url)
-dados = response.json()
-
-usd = float(dados["USDBRL"]["bid"])
-cny = float(dados["BRLCNY"]["bid"])
-
-# Configuração da página para alta qualidade visual e responsividade
+# Configuração da página para alta qualidade visual e responsividade (deve ser a primeira chamada Streamlit)
 st.set_page_config(
     page_title="Yuan to Real",
     page_icon="🛍️",
@@ -20,13 +10,33 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# Valores padrão (fallback) caso a API falhe ou dê timeout
+usd = 5.05
+cny = 1.35
+api_erro = False
 
-
+try:
+    url = "https://economia.awesomeapi.com.br/json/last/USD-BRL,BRL-CNY"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    }
+    response = requests.get(url, headers=headers, timeout=5)
+    if response.status_code == 200:
+        dados = response.json()
+        if "USDBRL" in dados and "BRLCNY" in dados:
+            usd = float(dados["USDBRL"]["bid"])
+            cny = float(dados["BRLCNY"]["bid"])
+        else:
+            api_erro = True
+    else:
+        api_erro = True
+except Exception as e:
+    api_erro = True
 
 # Inicializa a lista de produtos no session_state para manter os dados ao recarregar
 if 'lista_produtos' not in st.session_state:
     st.session_state.lista_produtos = []
-if 'valor_conversao_yuan' and 'valor_conversao_dolar' not in st.session_state:
+if 'valor_conversao_yuan' not in st.session_state or 'valor_conversao_dolar' not in st.session_state:
     st.session_state.mostrar_form = True
     st.session_state.valor_conversao_yuan = 0.0
     st.session_state.valor_conversao_dolar = 0.0
@@ -84,6 +94,8 @@ st.markdown("""
 col_title, col_logo = st.columns([6, 1])
 with col_title:
     st.markdown('<h1 class="app-title">🛍️ Calculadora Yuan</h1>', unsafe_allow_html=True)
+    if api_erro:
+        st.warning("⚠️ Não foi possível obter as cotações em tempo real da API. Usando cotações padrão de fallback (Dólar: R$ 5.05, Yuan: 1.35 BRL/CNY).")
 
 # Divisão de colunas principal: Cadastro no lado esquerdo, visualização no lado direito
 col_input, col_display = st.columns([2, 3])
