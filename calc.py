@@ -143,11 +143,14 @@ with col_input:
             taxa_inclusa = st.checkbox("Taxa Inclusa", key="form_taxa_inclusa")
             submitted = st.form_submit_button("Adicionar Frete")
             if submitted:
-                st.session_state.frete = valor_frete
-                st.session_state.taxa_inclusa = taxa_inclusa
-                st.success(f"Frete adicionado com sucesso!")
-                st.session_state.mostrar_frete = False
-                st.rerun()
+                if valor_frete == 0:
+                    st.error("Por favor, insira um valor válido para o frete!")
+                else:
+                    st.session_state.frete = valor_frete
+                    st.session_state.taxa_inclusa = taxa_inclusa
+                    st.success(f"Frete adicionado com sucesso!")
+                    st.session_state.mostrar_frete = False
+                    st.rerun()
     else:
         st.subheader("🛬 Frete")            
         st.text(f"Frete atual: {st.session_state.frete}")
