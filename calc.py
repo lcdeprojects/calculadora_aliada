@@ -209,7 +209,16 @@ with col_input:
     # CONVERSÃO
     # =========================================
 
-    st.subheader("💵 Conversão")
+    st.markdown("""
+<h3 style="
+margin-bottom:10px;
+padding-left:4px;
+white-space:nowrap;
+overflow:visible;
+">
+💵 Conversão
+</h3>
+""", unsafe_allow_html=True)    
 
     if st.session_state.mostrar_form:
 
