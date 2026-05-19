@@ -1,0 +1,14 @@
+# Streamlit secrets and local config
+.streamlit/secrets.toml
+.streamlit/config.toml
+
+# Streamlit temporary files
+**/static/
+**/streamlit-storage/
+
+# Python cache and environment
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+.venv/
