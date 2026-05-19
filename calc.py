@@ -147,6 +147,30 @@ div.stButton > button:hover {
     }
 }
 
+/* Corrige corte de títulos/subheaders */
+h1, h2, h3, h4 {
+    overflow: visible !important;
+    white-space: nowrap;
+}
+
+/* Ajuste específico dos subheaders */
+div[data-testid="stMarkdownContainer"] h3 {
+    font-size: 1.2rem !important;
+    padding-left: 4px !important;
+}
+
+/* Corrige largura das colunas */
+[data-testid="column"] {
+    overflow: visible !important;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+
+    div[data-testid="stMarkdownContainer"] h3 {
+        font-size: 1.05rem !important;
+    }
+}
 </style>
 """, unsafe_allow_html=True)
 
