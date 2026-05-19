@@ -72,7 +72,6 @@ st.markdown("""
 col_title, col_logo = st.columns([6, 1])
 with col_title:
     st.markdown('<h1 class="app-title">🛍️ Calculadora Yuan</h1>', unsafe_allow_html=True)
-    st.markdown('<p class="app-subtitle">Sua lista inteligente de compras e produtos com cálculo em tempo real.</p>', unsafe_allow_html=True)
 
 # Divisão de colunas principal: Cadastro no lado esquerdo, visualização no lado direito
 col_input, col_display = st.columns([2, 3])
