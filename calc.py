@@ -44,7 +44,8 @@ if 'modo_layout' not in st.session_state:
 # SIDEBAR / RESPONSIVIDADE
 # =====================================================
 
-st.sidebar.markdown("## 🎨 Layout")
+
+st.markdown("## 🎨 Layout")
 
 modo = st.sidebar.radio(
     "Escolha o modo:",
@@ -209,16 +210,19 @@ with col_input:
     # CONVERSÃO
     # =========================================
 
-    st.markdown("""
-<h3 style="
-margin-bottom:10px;
-padding-left:4px;
-white-space:nowrap;
-overflow:visible;
-">
-💵 Conversão
-</h3>
-""", unsafe_allow_html=True)    
+    st.markdown(
+        """
+        <h3 style="
+        margin-bottom:10px;
+        padding-left:4px;
+        white-space:nowrap;
+        overflow:visible;
+        ">
+        💵 Conversão
+        </h3>
+        """, 
+        unsafe_allow_html=True
+    )    
 
     if st.session_state.mostrar_form:
 
