@@ -15,23 +15,50 @@ usd = 5.05
 cny = 1.35
 api_erro = False
 
+import requests
+
+api_erro = False
+
+# Valores fallback
+usd = 5.20
+cny = 1.38
+
 try:
     url = "https://economia.awesomeapi.com.br/json/last/USD-BRL,BRL-CNY"
+
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        "User-Agent": "Mozilla/5.0"
     }
-    response = requests.get(url, headers=headers, timeout=5)
-    if response.status_code == 200:
-        dados = response.json()
-        if "USDBRL" in dados and "BRLCNY" in dados:
-            usd = float(dados["USDBRL"]["bid"])
-            cny = float(dados["BRLCNY"]["bid"])
-        else:
-            api_erro = True
+
+    response = requests.get(url, headers=headers, timeout=10)
+
+    # Levanta exceção para status HTTP inválido
+    response.raise_for_status()
+
+    dados = response.json()
+
+    print(dados)  # DEBUG
+
+    usd_info = dados.get("USDBRL")
+    cny_info = dados.get("BRLCNY")
+
+    if usd_info and cny_info:
+        usd = float(usd_info["bid"])
+        cny = float(cny_info["bid"])
     else:
         api_erro = True
-except Exception as e:
+        print("Estrutura JSON inesperada")
+
+except requests.exceptions.RequestException as e:
     api_erro = True
+    print(f"Erro na requisição: {e}")
+
+except (KeyError, ValueError, TypeError) as e:
+    api_erro = True
+    print(f"Erro ao processar JSON: {e}")
+
+if api_erro:
+    print("Não foi possível obter as cotações em tempo real da API. Usando cotações padrão de fallback")
 
 # Inicializa a lista de produtos no session_state para manter os dados ao recarregar
 if 'lista_produtos' not in st.session_state:
