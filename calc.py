@@ -11,8 +11,6 @@ st.set_page_config(
 )
 
 # Valores padrão (fallback) caso a API falhe ou dê timeout
-usd = 5.05
-cny = 1.35
 api_erro = False
 
 try:
