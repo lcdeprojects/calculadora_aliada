@@ -15,51 +15,25 @@ usd = 5.05
 cny = 1.35
 api_erro = False
 
-import requests
-
-api_erro = False
-
-# Valores fallback
-usd = 5.20
-cny = 1.38
-
 try:
-    url = "https://economia.awesomeapi.com.br/json/last/USD-BRL,BRL-CNY"
-
+    url = "https://economia.awesomeapi.com.br/json/last/USD-BRL,CNY-BRL"
     headers = {
-        "User-Agent": "Mozilla/5.0"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
     }
-
-    response = requests.get(url, headers=headers, timeout=10)
-
-    # Levanta exceção para status HTTP inválido
-    response.raise_for_status()
-
-    dados = response.json()
-
-    print(dados)  # DEBUG
-
-    usd_info = dados.get("USDBRL")
-    cny_info = dados.get("BRLCNY")
-
-    if usd_info and cny_info:
-        usd = float(usd_info["bid"])
-        cny = float(cny_info["bid"])
+    response = requests.get(url, headers=headers, timeout=5)
+    if response.status_code == 200:
+        dados = response.json()
+        if "USDBRL" in dados and "CNYBRL" in dados:
+            usd = float(dados["USDBRL"]["bid"])
+            cny = float(dados["CNYBRL"]["bid"])
+        else:
+            api_erro = True
     else:
         api_erro = True
-        print("Estrutura JSON inesperada")
-
-except requests.exceptions.RequestException as e:
+except Exception as e:
     api_erro = True
-    print(f"Erro na requisição: {e}")
 
-except (KeyError, ValueError, TypeError) as e:
-    api_erro = True
-    print(f"Erro ao processar JSON: {e}")
-
-if api_erro:
-    print("Não foi possível obter as cotações em tempo real da API. Usando cotações padrão de fallback")
-
+cny_new = 1/cny
 # Inicializa a lista de produtos no session_state para manter os dados ao recarregar
 if 'lista_produtos' not in st.session_state:
     st.session_state.lista_produtos = []
@@ -131,7 +105,7 @@ with col_input:
     if st.session_state.mostrar_form:
         st.subheader("💵 Conversão")
         with st.form("cadastro_conversao", clear_on_submit=True):
-            valor_conversao_yuan = st.number_input("Valor da Conversão (Yuan)", min_value=0.0, value=cny, step=0.01, key="form_conversao_yuan")
+            valor_conversao_yuan = st.number_input("Valor da Conversão (Yuan)", min_value=0.0, value=cny_new, step=0.01, key="form_conversao_yuan")
             valor_conversao_dolar = st.number_input("Valor da Conversão (Dólar)", min_value=0.0, value=usd, step=0.01, key="form_conversao_dolar")
             submitted = st.form_submit_button("Adicionar Conversão")
             if submitted:
