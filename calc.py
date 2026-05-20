@@ -234,31 +234,72 @@ with col_display:
         else:
             df_filtered = df
             
-        # Lista dinâmica com botões de ação para remover itens individualmente
+        # Lista dinâmica com botões de ação para remover ou editar itens individualmente
         for index, row in df_filtered.iterrows():
             # Localizar o índice real no session_state original
             actual_index = df.index[df['id'] == row['id']].tolist()[0]
             
             with st.container():
-                col_info, col_price, col_decl, col_action = st.columns([5, 3, 2, 1])
-                with col_info:
-                    st.markdown(f"**{row['nome']}**")
-                    st.caption(f"Qtd: {row['quantidade']}")
-                with col_price:
-                    st.markdown(f"**R$ {row['total']/ st.session_state.valor_conversao_yuan:.2f}**")
-                    st.caption(f"Unidade: Yuan {row['valor']}")
-                with col_decl:
-                    st.text("Valor Declarado")
-                    st.markdown(f"**US$ {row['valor_declarado']:.2f}**")
-                with col_action:
-                    # Botão para deletar o item atual
-                    if st.button("🗑️", key=f"del_{row['id']}", help="Remover este item"):
-                        st.session_state.lista_produtos.pop(actual_index)
-                        # Reindexa os IDs remanescentes para evitar colisões
-                        for idx, item in enumerate(st.session_state.lista_produtos):
-                            item['id'] = idx
-                        st.success(f"Item removido!")
-                        st.rerun()
+                if 'edit_item_id' in st.session_state and st.session_state.edit_item_id == row['id']:
+                    # MODO EDIÇÃO INLINE
+                    st.markdown(f"📝 **Editando Item: {row['nome']}**")
+                    edit_nome = st.text_input("Nome do Produto", value=row['nome'], key=f"edit_nome_{row['id']}")
+                    
+                    ec1, ec2, ec3 = st.columns(3)
+                    with ec1:
+                        edit_valor = st.number_input("Valor Unitário (Yuan)", min_value=0.0, value=float(row['valor']), step=0.01, key=f"edit_valor_{row['id']}")
+                    with ec2:
+                        edit_qtd = st.number_input("Quantidade", min_value=1, value=int(row['quantidade']), step=1, key=f"edit_qtd_{row['id']}")
+                    with ec3:
+                        edit_decl = st.number_input("Valor Declarado (US$)", min_value=0.0, value=float(row['valor_declarado']), step=0.01, key=f"edit_decl_{row['id']}")
+                    
+                    col_save, col_cancel = st.columns(2)
+                    with col_save:
+                        if st.button("💾 Salvar Edição", key=f"save_{row['id']}", use_container_width=True):
+                            if not edit_nome.strip():
+                                st.error("O nome do produto não pode ficar vazio!")
+                            else:
+                                st.session_state.lista_produtos[actual_index] = {
+                                    "id": row['id'],
+                                    "nome": edit_nome.strip(),
+                                    "valor": edit_valor,
+                                    "quantidade": edit_qtd,
+                                    "total": edit_valor * edit_qtd,
+                                    "valor_declarado": edit_decl,
+                                }
+                                st.session_state.pop('edit_item_id', None)
+                                st.success("Item editado com sucesso!")
+                                st.rerun()
+                    with col_cancel:
+                        if st.button("❌ Cancelar", key=f"cancel_{row['id']}", use_container_width=True):
+                            st.session_state.pop('edit_item_id', None)
+                            st.rerun()
+                else:
+                    # MODO VISUALIZAÇÃO
+                    col_info, col_price, col_decl, col_action = st.columns([5, 3, 2, 2])
+                    with col_info:
+                        st.markdown(f"**{row['nome']}**")
+                        st.caption(f"Qtd: {row['quantidade']}")
+                    with col_price:
+                        st.markdown(f"**R$ {row['total']/ st.session_state.valor_conversao_yuan:.2f}**")
+                        st.caption(f"Unidade: Yuan {row['valor']}")
+                    with col_decl:
+                        st.text("Valor Declarado")
+                        st.markdown(f"**US$ {row['valor_declarado']:.2f}**")
+                    with col_action:
+                        col_edit_btn, col_del_btn = st.columns(2)
+                        with col_edit_btn:
+                            if st.button("📝", key=f"edit_{row['id']}", help="Editar este item"):
+                                st.session_state.edit_item_id = row['id']
+                                st.rerun()
+                        with col_del_btn:
+                            if st.button("🗑️", key=f"del_{row['id']}", help="Remover este item"):
+                                st.session_state.lista_produtos.pop(actual_index)
+                                # Reindexa os IDs remanescentes para evitar colisões
+                                for idx, item in enumerate(st.session_state.lista_produtos):
+                                    item['id'] = idx
+                                st.success(f"Item removido!")
+                                st.rerun()
                 st.markdown("<hr style='margin: 0.5rem 0;' />", unsafe_allow_html=True)
                 
         # Ações de rodapé da lista
