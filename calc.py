@@ -11,6 +11,8 @@ st.set_page_config(
 )
 
 # Valores padrão (fallback) caso a API falhe ou dê timeout
+usd = 5.05
+cny = 1.35
 api_erro = False
 
 try:
@@ -31,7 +33,6 @@ try:
 except Exception as e:
     api_erro = True
 
-cny_new = 1/cny
 # Inicializa a lista de produtos no session_state para manter os dados ao recarregar
 if 'lista_produtos' not in st.session_state:
     st.session_state.lista_produtos = []
