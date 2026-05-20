@@ -104,7 +104,7 @@ with col_input:
     if st.session_state.mostrar_form:
         st.subheader("💵 Conversão")
         with st.form("cadastro_conversao", clear_on_submit=True):
-            valor_conversao_yuan = st.number_input("Valor da Conversão (Yuan)", min_value=0.0, value=cny_new, step=0.01, key="form_conversao_yuan")
+            valor_conversao_yuan = st.number_input("Valor da Conversão (Yuan)", min_value=0.0, value=cny, step=0.01, key="form_conversao_yuan")
             valor_conversao_dolar = st.number_input("Valor da Conversão (Dólar)", min_value=0.0, value=usd, step=0.01, key="form_conversao_dolar")
             submitted = st.form_submit_button("Adicionar Conversão")
             if submitted:
